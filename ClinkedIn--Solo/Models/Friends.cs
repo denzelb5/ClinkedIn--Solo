@@ -7,5 +7,8 @@ namespace ClinkedIn__Solo.Models
 {
     public class Friends
     {
+        public int Id { get; set; }
+        public int ClinkerId { get; set; }
+        public int FriendClinkerId { get; set; }
     }
 }

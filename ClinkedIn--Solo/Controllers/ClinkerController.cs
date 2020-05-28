@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ClinkedIn__Solo.DataAccess;
 using ClinkedIn__Solo.Models;
+using ClinkedIn.Models;
 
 namespace ClinkedIn__Solo.Controllers
 {
@@ -17,18 +18,18 @@ namespace ClinkedIn__Solo.Controllers
         ClinkerRepository _repository = new ClinkerRepository();
 
         // api/clinker
-        [HttpPost]
-        public IActionResult AddClinker(Clinker clinkerToAdd)
+        [HttpPut("{FirstName}/{LastName}/{PrisonTermEndDate}")]
+        public IActionResult AddClinker(string FirstName, string LastName, DateTime PrisonTermEndDate)
         {
-            var existingClinker = _repository.GetByFullName(clinkerToAdd);
+            var existingClinker = _repository.GetIdByClinkerName(FirstName, LastName, PrisonTermEndDate);
             if (existingClinker == null)
             {
-                _repository.Add(clinkerToAdd);
-                return Created("", clinkerToAdd);
+                var clinkerAdded = _repository.AddNewClinker(FirstName, LastName, PrisonTermEndDate);
+                return Created("", clinkerAdded);
             }
             else
             {
-                return BadRequest("User already exists.")
+                return BadRequest("User already exists.");
             }
         }
     }

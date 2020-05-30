@@ -6,12 +6,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using System.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace ClinkedIn__Solo.DataAccess
 {
     public class ClinkerRepository
     {
-        const string ConnectionString = "Server=localhost;Database=ClinkenIn--2;Trusted_Connection=True;";
+        string ConnectionString;
+        public ClinkerRepository(IConfiguration config)
+        {
+            var ConnectionString = config.GetConnectionString("ClinkedIn--Solo");
+
+        }
 
         public IEnumerable<Clinker> AddNewClinker(string FirstName, string LastName, DateTime PrisonTermEndDate)
         {

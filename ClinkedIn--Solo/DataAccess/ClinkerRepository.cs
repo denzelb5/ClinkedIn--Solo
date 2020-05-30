@@ -15,7 +15,7 @@ namespace ClinkedIn__Solo.DataAccess
         string ConnectionString;
         public ClinkerRepository(IConfiguration config)
         {
-            var ConnectionString = config.GetConnectionString("ClinkedIn--Solo");
+            ConnectionString = config.GetConnectionString("ClinkenIn--2");
 
         }
 

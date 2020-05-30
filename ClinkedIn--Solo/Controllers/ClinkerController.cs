@@ -15,7 +15,12 @@ namespace ClinkedIn__Solo.Controllers
     [ApiController]
     public class ClinkerController : ControllerBase
     {
-        ClinkerRepository _repository = new ClinkerRepository();
+        ClinkerRepository _repository;
+
+        public ClinkerController(ClinkerRepository repository)
+        {
+            _repository = repository;
+        }
 
         // api/clinker
         [HttpPut("{FirstName}/{LastName}/{PrisonTermEndDate}")]

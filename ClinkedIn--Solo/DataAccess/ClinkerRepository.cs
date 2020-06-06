@@ -72,12 +72,13 @@ namespace ClinkedIn__Solo.DataAccess
 
             using (var db = new SqlConnection(ConnectionString))
             {
-                var result = db.Query<Clinker>(sql, parameters);
-                var serviceList = db.Query<Services>(servicesQuery);
-                foreach (var info in result)
-                {
-                    info.ClinkerServices = serviceList.Where(x => x.Id == info.Id).Select(x => x.Name);
-                }
+                var result = db.Query<Services>(sql, parameters);
+                //var serviceList = db.Query<Services>(servicesQuery);
+                //foreach (var info in result)
+                //{
+                //    info.ClinkerServices = serviceList.Where(x => x.Id == info.Id).Select(x => x.Id).ToString();
+                   
+                //}
 
                 return result;
             }

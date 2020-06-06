@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClinkedIn__Solo.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace ClinkedIn.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime PrisonTermEndDate { get; set; }
-        public IEnumerable<string> ClinkerServices { get; set; }
+        public List<Services> ClinkerServices { get; set; }
 
     }
 

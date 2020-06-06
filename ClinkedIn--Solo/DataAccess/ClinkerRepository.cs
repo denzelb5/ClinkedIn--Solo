@@ -58,5 +58,58 @@ namespace ClinkedIn__Solo.DataAccess
                 return result;
             }
         }
+
+        public IEnumerable<Clinker> GetAllServicesByClinkerId(int clinkerId)
+        {
+            var sql = @"select services.*, Clinker.Id
+		                from Services
+		                join Clinker 
+		                On Clinker.Id = Services.ClinkerId
+                        where services.clinkerId = @clinkerId;";
+
+            var parameters = new { ClinkerId = clinkerId };
+            var servicesQuery = @"select id from services";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var result = db.Query<Clinker>(sql, parameters);
+                var serviceList = db.Query<Services>(servicesQuery);
+                foreach (var info in result)
+                {
+                    info.ClinkerServices = serviceList.Where(x => x.Id == info.Id).Select(x => x.Name);
+                }
+
+                return result;
+            }
+        }
+
+
+        //public IEnumerable<InvoiceWithCustomerAndTrackInfoPart2> GetInvoicesWithCustomersAndTracksPart2()
+        //{
+        //    var sql = @"
+        //                select i.InvoiceId,c.CustomerId, i.InvoiceDate, i.Total, c.FirstName + ' ' + c.LastName as CustomerName
+        //                from Invoice i  
+        //                    join customer c
+        //                        on i.customerid = c.customerid
+        //              ";
+
+        //    var invoiceLineQuery = "select trackid, invoiceid from invoiceline";
+
+        //    using (var db = new SqlConnection(ConnectionString))
+        //    {
+        //        //var parameters = new { Country = country } << Need to get the sum of the invoice ;
+        //        var result = db.Query<InvoiceWithCustomerAndTrackInfoPart2>(sql);
+        //        var invoiceLines = db.Query<InvoiceTrack>(invoiceLineQuery);
+
+        //        foreach (var info in result)
+        //        {
+        //            info.Tracks = invoiceLines.Where(il => il.InvoiceId == info.InvoiceId).Select(il => il.TrackId);
+        //        }
+
+        //        return result;
+        //    }
+        //}
+
+
     }
 }

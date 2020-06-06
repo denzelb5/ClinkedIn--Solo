@@ -37,5 +37,34 @@ namespace ClinkedIn__Solo.Controllers
                 return BadRequest("User already exists.");
             }
         }
+
+        //api/clinker/services/{clinkerId}
+        [HttpGet("services/{clinkerId}")]
+        public IActionResult GetClinkerServices(int clinkerId)
+        {
+            var services = _repository.GetAllServicesByClinkerId(clinkerId);
+            if (!services.Any())
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(services);
+            }
+
+        }
+
+        //// api/pickles/5
+        //[HttpGet("{id}")]
+        //public IActionResult GetPickleById(int id)
+        //{
+        //    var pickle = _repository.GetById(id);
+
+        //    if (pickle == null) return NotFound("No pickle with that id could be found.");
+
+        //    return Ok(pickle);
+        //}
+
+
     }
 }

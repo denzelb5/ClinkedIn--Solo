@@ -1,20 +1,14 @@
-﻿using ClinkedIn__Solo.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
-namespace ClinkedIn.Models
+namespace ClinkedIn__Solo.Commands
 {
-    public class Clinker
+    public class AddNewClinkerCommand
     {
-        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime PrisonTermEndDate { get; set; }
-        public IEnumerable<int> ClinkerServices { get; set; }
-
     }
-
 }

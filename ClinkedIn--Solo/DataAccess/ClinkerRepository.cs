@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using ClinkedIn__Solo.Commands;
 
 namespace ClinkedIn__Solo.DataAccess
 {
@@ -19,44 +20,86 @@ namespace ClinkedIn__Solo.DataAccess
 
         }
 
-        public IEnumerable<Clinker> AddNewClinker(string FirstName, string LastName, DateTime PrisonTermEndDate)
+        public Clinker AddNewClinker(AddNewClinkerCommand newClinker)
         {
             var sql = @"INSERT INTO CLINKER (FirstName, LastName, PrisonTermEndDate)
-                        VALUES (@FirstName, @LastName, @PrisonTermEndDate)";
-
-            var parameters = new
-            {
-                FirstName = FirstName,
-                LastName = LastName,
-                PrisonTermEndDate = PrisonTermEndDate
-            };
+                       output inserted.*
+                       VALUES (@FirstName, @LastName, @PrisonTermEndDate)";
 
             using (var db = new SqlConnection(ConnectionString))
             {
-                var result = db.Query<Clinker>(sql, parameters);
+                var parameters = new
+                {
+                    FirstName = newClinker.FirstName,
+                    LastName = newClinker.LastName,
+                    PrisonTermEndDate = newClinker.PrisonTermEndDate
+                };
+
+                var result = db.QueryFirstOrDefault<Clinker>(sql, parameters);
                 return result;
             }
+
         }
 
-        public int GetIdByClinkerName(string FirstName, string LastName, DateTime PrisonTermEndDate)
+
+        public int? GetIdByClinkerName(string firstName, string lastName, DateTime prisonTermEndDate)
         {
             var sql = @"SELECT Id From clinker 
                         where FirstName = @FirstName
                         AND LastName = @LastName
                         AND PrisonTermEndDate = @PrisonTermEndDate;";
 
-            var parameters = new
+            using (var db = new SqlConnection(ConnectionString))
             {
-                FirstName = FirstName,
-                LastName = LastName,
-                PrisonTermEndDate = PrisonTermEndDate
-            };
+                var parameters = new
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    PrisonTermEndDate = prisonTermEndDate
+                };
+
+                var result = db.QueryFirstOrDefault<int>(sql, parameters);
+
+                if (result != 0)
+                {
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        
+
+        public IEnumerable<Clinker> GetAllServicesByClinkerId(int clinkerId)
+        {
+            var sql = @"select services.*, Clinker.Id
+		                from Services
+		                join Clinker 
+		                On Clinker.Id = Services.ClinkerId
+                        where services.clinkerId = @clinkerId;";
+
+            var parameters = new { ClinkerId = clinkerId };
+            var servicesQuery = @"select id from services";
 
             using (var db = new SqlConnection(ConnectionString))
             {
-                var result = db.QueryFirstOrDefault<int>(sql, parameters);
+                var result = db.Query<Clinker>(sql, parameters);
+                var serviceList = db.Query<Services>(servicesQuery);
+                foreach (var info in result)
+                {
+                    info.ClinkerServices = serviceList.Where(x => x.Id == info.Id).Select(x => x.Id);
+                   
+                }
+
                 return result;
             }
         }
+
+
+        
+
     }
 }

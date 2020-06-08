@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using ClinkedIn__Solo.DataAccess;
 using ClinkedIn__Solo.Models;
 using ClinkedIn.Models;
+using ClinkedIn__Solo.Commands;
 
 namespace ClinkedIn__Solo.Controllers
 {
@@ -22,21 +23,26 @@ namespace ClinkedIn__Solo.Controllers
             _repository = repository;
         }
 
-        // api/clinker
-        [HttpPut("{FirstName}/{LastName}/{PrisonTermEndDate}")]
-        public IActionResult AddClinker(string FirstName, string LastName, DateTime PrisonTermEndDate)
+        
+
+        // api/clinker/addclinker
+        [HttpPost("addclinker")]
+        public IActionResult AddNewClinker(AddNewClinkerCommand newClinker)
         {
-            var existingClinker = _repository.GetIdByClinkerName(FirstName, LastName, PrisonTermEndDate);
+            var existingClinker = _repository.GetIdByClinkerName(newClinker.FirstName, newClinker.LastName, newClinker.PrisonTermEndDate);
+
             if (existingClinker == null)
             {
-                var clinkerAdded = _repository.AddNewClinker(FirstName, LastName, PrisonTermEndDate);
-                return Created("", clinkerAdded);
+                var createdClinker = _repository.AddNewClinker(newClinker);
+                return Created("", createdClinker);
             }
             else
             {
-                return BadRequest("User already exists.");
+                return BadRequest("Clinker already exists.");
             }
         }
+
+       
 
         //api/clinker/services/{clinkerId}
         [HttpGet("services/{clinkerId}")]
@@ -54,17 +60,7 @@ namespace ClinkedIn__Solo.Controllers
 
         }
 
-        //// api/pickles/5
-        //[HttpGet("{id}")]
-        //public IActionResult GetPickleById(int id)
-        //{
-        //    var pickle = _repository.GetById(id);
-
-        //    if (pickle == null) return NotFound("No pickle with that id could be found.");
-
-        //    return Ok(pickle);
-        //}
-
+       
 
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using ClinkedIn__Solo.Commands;
 
 namespace ClinkedIn__Solo.DataAccess
 {
@@ -19,45 +20,58 @@ namespace ClinkedIn__Solo.DataAccess
 
         }
 
-        public IEnumerable<Clinker> AddNewClinker(string FirstName, string LastName, DateTime PrisonTermEndDate)
+        public Clinker AddNewClinker(AddNewClinkerCommand newClinker)
         {
             var sql = @"INSERT INTO CLINKER (FirstName, LastName, PrisonTermEndDate)
-                        VALUES (@FirstName, @LastName, @PrisonTermEndDate)";
-
-            var parameters = new
-            {
-                FirstName = FirstName,
-                LastName = LastName,
-                PrisonTermEndDate = PrisonTermEndDate
-            };
+                       output inserted.*
+                       VALUES (@FirstName, @LastName, @PrisonTermEndDate)";
 
             using (var db = new SqlConnection(ConnectionString))
             {
-                var result = db.Query<Clinker>(sql, parameters);
+                var parameters = new
+                {
+                    FirstName = newClinker.FirstName,
+                    LastName = newClinker.LastName,
+                    PrisonTermEndDate = newClinker.PrisonTermEndDate
+                };
+
+                var result = db.QueryFirstOrDefault<Clinker>(sql, parameters);
                 return result;
             }
+
         }
 
-        public int GetIdByClinkerName(string FirstName, string LastName, DateTime PrisonTermEndDate)
+
+        public int? GetIdByClinkerName(string firstName, string lastName, DateTime prisonTermEndDate)
         {
             var sql = @"SELECT Id From clinker 
                         where FirstName = @FirstName
                         AND LastName = @LastName
                         AND PrisonTermEndDate = @PrisonTermEndDate;";
 
-            var parameters = new
-            {
-                FirstName = FirstName,
-                LastName = LastName,
-                PrisonTermEndDate = PrisonTermEndDate
-            };
-
             using (var db = new SqlConnection(ConnectionString))
             {
+                var parameters = new
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    PrisonTermEndDate = prisonTermEndDate
+                };
+
                 var result = db.QueryFirstOrDefault<int>(sql, parameters);
-                return result;
+
+                if (result != 0)
+                {
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
+
+        
 
         public IEnumerable<Clinker> GetAllServicesByClinkerId(int clinkerId)
         {
@@ -72,45 +86,20 @@ namespace ClinkedIn__Solo.DataAccess
 
             using (var db = new SqlConnection(ConnectionString))
             {
-                var result = db.Query<Services>(sql, parameters);
-                //var serviceList = db.Query<Services>(servicesQuery);
-                //foreach (var info in result)
-                //{
-                //    info.ClinkerServices = serviceList.Where(x => x.Id == info.Id).Select(x => x.Id).ToString();
+                var result = db.Query<Clinker>(sql, parameters);
+                var serviceList = db.Query<Services>(servicesQuery);
+                foreach (var info in result)
+                {
+                    info.ClinkerServices = serviceList.Where(x => x.Id == info.Id).Select(x => x.Id);
                    
-                //}
+                }
 
                 return result;
             }
         }
 
 
-        //public IEnumerable<InvoiceWithCustomerAndTrackInfoPart2> GetInvoicesWithCustomersAndTracksPart2()
-        //{
-        //    var sql = @"
-        //                select i.InvoiceId,c.CustomerId, i.InvoiceDate, i.Total, c.FirstName + ' ' + c.LastName as CustomerName
-        //                from Invoice i  
-        //                    join customer c
-        //                        on i.customerid = c.customerid
-        //              ";
-
-        //    var invoiceLineQuery = "select trackid, invoiceid from invoiceline";
-
-        //    using (var db = new SqlConnection(ConnectionString))
-        //    {
-        //        //var parameters = new { Country = country } << Need to get the sum of the invoice ;
-        //        var result = db.Query<InvoiceWithCustomerAndTrackInfoPart2>(sql);
-        //        var invoiceLines = db.Query<InvoiceTrack>(invoiceLineQuery);
-
-        //        foreach (var info in result)
-        //        {
-        //            info.Tracks = invoiceLines.Where(il => il.InvoiceId == info.InvoiceId).Select(il => il.TrackId);
-        //        }
-
-        //        return result;
-        //    }
-        //}
-
+        
 
     }
 }

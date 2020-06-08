@@ -73,7 +73,7 @@ namespace ClinkedIn__Solo.DataAccess
 
         
 
-        public IEnumerable<Clinker> GetAllServicesByClinkerId(int clinkerId)
+        public IEnumerable<Services> GetAllServicesByClinkerId(int clinkerId)
         {
             var sql = @"select services.*, Clinker.Id
 		                from Services

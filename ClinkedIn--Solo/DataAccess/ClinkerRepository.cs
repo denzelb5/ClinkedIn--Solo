@@ -8,6 +8,7 @@ using Dapper;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using ClinkedIn__Solo.Commands;
+using ClinkedIn__Solo.ViewModels;
 
 namespace ClinkedIn__Solo.DataAccess
 {
@@ -73,28 +74,42 @@ namespace ClinkedIn__Solo.DataAccess
 
         
 
-        public IEnumerable<Clinker> GetAllServicesByClinkerId(int clinkerId)
+        public IEnumerable<ClinkerServices> GetAllServicesByClinkerId(int clinkerId)
         {
-            var sql = @"select services.*, Clinker.Id
-		                from Services
-		                join Clinker 
-		                On Clinker.Id = Services.ClinkerId
-                        where services.clinkerId = @clinkerId;";
+            //var sql = @"select services.*, Clinker.Id,
+            //            Clinker.FirstName + ' ' + Clinker.LastName AS [Name]
+            //      from Services
+            //      join Clinker 
+            //      On Clinker.Id = Services.ClinkerId
+            //            where services.clinkerId = @clinkerId;";
 
-            var parameters = new { ClinkerId = clinkerId };
-            var servicesQuery = @"select id from services";
+            var sqlForClinkers = @"select * from Clinker where Id = @ClinkerId";
+            var sqlForServices = @"select * from Services";
+
+            
+            //var servicesQuery = @"select * from services";
 
             using (var db = new SqlConnection(ConnectionString))
             {
-                var result = db.Query<Clinker>(sql, parameters);
-                var serviceList = db.Query<Services>(servicesQuery);
-                foreach (var info in result)
+                var parameters = new { ClinkerId = clinkerId };
+                var clinkers = db.Query<Clinker>(sqlForClinkers, parameters);
+                var serviceList = db.Query<Services>(sqlForServices);
+
+                var clinkersWithServices = new List<ClinkerServices>();
+
+                foreach (var clinker in clinkers)
                 {
-                    info.ClinkerServices = serviceList.Where(x => x.Id == info.Id).Select(x => x.Id);
-                   
+                    var clinkerWithServices = new ClinkerServices
+                    {
+                        ClinkerId = clinker.Id,
+                        Name = $"{clinker.FirstName} {clinker.LastName}",
+                        Services = serviceList.Where(x => x.ClinkerId == clinker.Id).Select(x => x.Name)
+                    };
+                    clinkersWithServices.Add(clinkerWithServices);
+
                 }
 
-                return result;
+                return clinkersWithServices;
             }
         }
 

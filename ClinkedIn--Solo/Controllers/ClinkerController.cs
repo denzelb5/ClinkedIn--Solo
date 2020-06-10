@@ -44,8 +44,8 @@ namespace ClinkedIn__Solo.Controllers
 
        
 
-        //api/clinker/services/{clinkerId}
-        [HttpGet("services/{clinkerId}")]
+        //api/clinker/{clinkerId}/services
+        [HttpGet("{clinkerId}/services")]
         public IActionResult GetClinkerServices(int clinkerId)
         {
             var services = _repository.GetAllServicesByClinkerId(clinkerId);
@@ -60,7 +60,6 @@ namespace ClinkedIn__Solo.Controllers
 
         }
 
-       
-
+        
     }
 }

@@ -13,7 +13,8 @@ namespace ClinkedIn.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime PrisonTermEndDate { get; set; }
-        public IEnumerable<int> ClinkerServices { get; set; }
+        
+        
 
     }
 

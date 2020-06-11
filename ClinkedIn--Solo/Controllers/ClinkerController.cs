@@ -60,6 +60,21 @@ namespace ClinkedIn__Solo.Controllers
 
         }
 
+        //api/clinker/{clinkerId}/interests
+        [HttpGet("{clinkerId}/interests")] 
+        public IActionResult GetClinkerInterests(int clinkerId)
+        {
+            var interests = _repository.GetAllInterestsByClinkerId(clinkerId);
+            if (!interests.Any())
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(interests);
+            }
+        }
+
         
     }
 }

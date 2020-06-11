@@ -76,18 +76,9 @@ namespace ClinkedIn__Solo.DataAccess
 
         public IEnumerable<ClinkerServices> GetAllServicesByClinkerId(int clinkerId)
         {
-            //var sql = @"select services.*, Clinker.Id,
-            //            Clinker.FirstName + ' ' + Clinker.LastName AS [Name]
-            //      from Services
-            //      join Clinker 
-            //      On Clinker.Id = Services.ClinkerId
-            //            where services.clinkerId = @clinkerId;";
 
             var sqlForClinkers = @"select * from Clinker where Id = @ClinkerId";
             var sqlForServices = @"select * from Services";
-
-            
-            //var servicesQuery = @"select * from services";
 
             using (var db = new SqlConnection(ConnectionString))
             {
@@ -113,8 +104,36 @@ namespace ClinkedIn__Solo.DataAccess
             }
         }
 
+        public IEnumerable<ClinkerInterests> GetAllInterestsByClinkerId(int clinkerId)
+        {
+            var clinkerSql = @"SELECT * FROM Clinker WHERE Id = @ClinkerId";
+            var interestsSql = @"SELECT * FROM Interests";
 
-        
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var parameters = new { ClinkerId = clinkerId };
+                var clinkers = db.Query<Clinker>(clinkerSql, parameters);
+                var clinkerInterests = db.Query<Interests>(interestsSql);
+
+                var clinkersWithInterests = new List<ClinkerInterests>();
+
+                foreach (var clinker in clinkers)
+                {
+                    var clinkerWithInterests = new ClinkerInterests
+                    {
+                        ClinkerId = clinker.Id,
+                        Name = $"{clinker.FirstName} {clinker.LastName}",
+                        Interests = clinkerInterests.Where(il => il.ClinkerId == clinker.Id).Select(il => il.Name)
+                    };
+                    clinkersWithInterests.Add(clinkerWithInterests);
+                }
+                return clinkersWithInterests;
+
+            }
+        }
+
+
+
 
     }
 }

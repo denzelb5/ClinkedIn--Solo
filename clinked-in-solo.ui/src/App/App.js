@@ -1,6 +1,9 @@
 import React from 'react';
 
+import firebaseConnection from '../helpers/data/connection';
 import './App.scss';
+
+firebaseConnection();
 
 function App() {
   return (

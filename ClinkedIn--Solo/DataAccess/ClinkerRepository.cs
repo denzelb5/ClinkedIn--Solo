@@ -17,8 +17,19 @@ namespace ClinkedIn__Solo.DataAccess
         string ConnectionString;
         public ClinkerRepository(IConfiguration config)
         {
-            ConnectionString = config.GetConnectionString("ClinkenIn--2");
+            ConnectionString = config.GetConnectionString("ClinkenIn--2"); 
 
+        }
+
+        public List<Clinker> GetAllClinkers()
+        {
+            var sql = @"select * from Clinker";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var clinkers = db.Query<Clinker>(sql).ToList();
+                return clinkers;
+            }
         }
 
         public Clinker AddNewClinker(AddNewClinkerCommand newClinker)

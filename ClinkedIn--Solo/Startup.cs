@@ -28,6 +28,11 @@ namespace ClinkedIn__Solo
             services.AddControllers();
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<ClinkerRepository>();
+
+            services.AddCors(options =>
+                options.AddPolicy("ItsAllGood",
+                builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin())
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +42,8 @@ namespace ClinkedIn__Solo
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("ItsAllGood");
 
             app.UseHttpsRedirection();
 

@@ -5,10 +5,11 @@ import AllClinkers from '../components/shared/AllClinkers/AllClinkers';
 import {
   BrowserRouter as Router,
   Route,
-  Redirect,
+  // Redirect,
   Switch,
 } from 'react-router-dom';
-import ClinkerWithInterests from '../components/pages/ClinkerInterests/ClinkerInterests';
+import ClinkersWithInterests from '../components/pages/ClinkersWithInterests/ClinkersWithInterests';
+import ClinkersWithServices from '../components/pages/ClinkersWithServices/ClinkersWithServices';
 
 
 
@@ -32,7 +33,8 @@ class App extends React.Component {
           <Router>
             <Switch>
               <Route path="/" exact component={AllClinkers} authed={authed} />
-              <Route path="/:clinkerId/interests" component={ClinkerWithInterests} authed={authed} />
+              <Route path="/:clinkerId/interests" component={ClinkersWithInterests} authed={authed} />
+              <Route path="/:clinkerId/services" component={ClinkersWithServices} authed={authed} />
             </Switch>
 
           </Router>

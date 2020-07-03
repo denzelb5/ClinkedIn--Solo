@@ -6,15 +6,20 @@ const getAllClinkers = () => new Promise((resolve, reject) =>{
     axios.get(`${baseUrl}/api/clinker`)
     .then((result) => {
         const clinkers = result.data;
-        console.log(clinkers);
         resolve(clinkers);
     }).catch(error => reject(error));
 })
 
-const getClinkerWithInterests = (clinkerId) => new Promise((resolve, reject) => {
+const getClinkersWithInterests = (clinkerId) => new Promise((resolve, reject) => {
     axios.get(`${baseUrl}/api/clinker/${clinkerId}/interests`)
     .then((result) => resolve(result.data))
     .catch(error => reject(error));
 });
-console.log(getClinkerWithInterests(2));
-export default { getAllClinkers, getClinkerWithInterests };
+
+ const getClinkersWithServices = (clinkerId) => new Promise((resolve, reject) => {
+     axios.get(`${baseUrl}/api/clinker/${clinkerId}/services`)
+     .then((result) => resolve(result.data))
+     .catch(error => reject(error));
+ })
+
+export default { getAllClinkers, getClinkersWithInterests, getClinkersWithServices };

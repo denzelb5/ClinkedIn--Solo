@@ -23,7 +23,18 @@ namespace ClinkedIn__Solo.Controllers
             _repository = repository;
         }
 
-        
+        //api/clinker
+        [HttpGet]
+        public IActionResult GetClinkers()
+        {
+            var clinkers = _repository.GetAllClinkers();
+
+            if (!clinkers.Any())
+            {
+                return NotFound("No clinkers found");
+            }
+            return Ok(clinkers);
+        }
 
         // api/clinker/addclinker
         [HttpPost("addclinker")]

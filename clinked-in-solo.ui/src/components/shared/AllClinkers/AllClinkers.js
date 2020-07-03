@@ -1,5 +1,5 @@
 import React from 'react';
-import InterestCard from '../InterestCard/InterestCard';
+import ClinkerCard from '../../shared/ClinkerCard/ClinkerCard';
 import clinkerData from '../../../helpers/data/clinkerData';
 
 import './AllClinkers.scss';
@@ -16,7 +16,7 @@ class AllClinkers extends React.Component {
 
     render() {
         const { clinkers } = this.state;
-        const singleClinker = clinkers.map((clinker) => <InterestCard key={clinker.id} clinker={clinker} />);
+        const singleClinker = clinkers.map((clinker) => <ClinkerCard key={clinker.id} clinker={clinker} />);
 
         return (
         <div className="d-flex flex-wrap clinker-box">{singleClinker}</div>
